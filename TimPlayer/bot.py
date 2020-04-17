@@ -11,6 +11,7 @@ r = None
 c = None
 team = None
 turnNum = 0
+startPoint = 0
 def dlog(str):
     if DEBUG > 0:
         log(str)
@@ -45,12 +46,12 @@ def turn():
     global board_size
     global team
     global turnNum
+    global startPoint
     """
     MUST be defined for robot to run
     This function will be called at the beginning of every turn and should contain the bulk of your robot commands
     """
-    turnNum+=1
-    dlog('Starting Turn: '+str(turnNum))
+    dlog('Starting Turn: ')
     board_size = get_board_size()
 
     team = get_team()
@@ -86,14 +87,20 @@ def turn():
         confusion = "you need a line here to avoid segfault. we aren't sure why but are working on it"
         # ^ I think this is related to the potential ambiguity of what the following else is referring to?
 
+
+    #OVERLORD
     else:
+        turnNum+=1
+        if turnNum%8==0:
+            startPoint+=1
+
         if team == Team.WHITE:
             index = 0
         else:
             index = board_size - 1
 
-        for _ in range(board_size):
-            i = random.randint(0, board_size - 1)
+        for x in range(int(board_size/2)):
+            i=(startPoint+x*2)%15
             if not check_space(index, i):
                 spawn(index, i)
                 dlog('Spawned unit at: (' + str(index) + ', ' + str(i) + ')')
