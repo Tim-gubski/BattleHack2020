@@ -1,6 +1,5 @@
 import random
 
-
 # This is an example bot written by the developers!
 # Use this to help write your own code, or run it against your bot to see how well you can do!
 
@@ -23,26 +22,26 @@ def check_space_wrapper(r, c):
         return False
     try:
         return check_space(r, c)
-    except:
+    except RobotError:
         return None
 
-def check_adjacent(r,c):
-    if check_space_wrapper(r+1,c)==team:
+
+def check_adjacent(r, c):
+    if check_space_wrapper(r + 1, c) == team:
         return True
-    elif check_space_wrapper(r-1,c)==team:
+    elif check_space_wrapper(r - 1, c) == team:
         return True
-    elif check_space_wrapper(r,c+1)==team:
+    elif check_space_wrapper(r, c + 1) == team:
         return True
-    elif check_space_wrapper(r,c-1)==team:
+    elif check_space_wrapper(r, c - 1) == team:
         return True
     else:
         return False
 
 
-
 def turn():
     global forward
-    global r,c
+    global r, c
     global board_size
     global team
     global turnNum
@@ -70,17 +69,17 @@ def turn():
         else:
             forward = -1
 
-        # try catpuring pieces
-        if check_space_wrapper(r + forward, c + 1) == opp_team: # up and right
+        # try capturing pieces
+        if check_space_wrapper(r + forward, c + 1) == opp_team:  # up and right
             capture(r + forward, c + 1)
             dlog('Captured at: (' + str(r + forward) + ', ' + str(c + 1) + ')')
 
-        elif check_space_wrapper(r + forward, c - 1) == opp_team: # up and left
+        elif check_space_wrapper(r + forward, c - 1) == opp_team:  # up and left
             capture(r + forward, c - 1)
             dlog('Captured at: (' + str(r + forward) + ', ' + str(c - 1) + ')')
 
         # Move forward if next to other unit
-        elif check_adjacent(r,c):
+        elif check_adjacent(r, c):
             move_forward()
             dlog('Moved forward!')
 
@@ -108,4 +107,3 @@ def turn():
 
     bytecode = get_bytecode()
     dlog('Done! Bytecode left: ' + str(bytecode))
-
