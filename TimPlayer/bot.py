@@ -124,9 +124,14 @@ def turn():
         else:
             empty = findEmpty()
             for i in empty:
-                if not check_space(index, i):
+                if not check_space_wrapper(index, i):
                     spawn(index, i)
-                    dlog('Spawned unit at: (' + str(index) + ', ' + str(i) + ')')
+                    break
+                if not check_space_wrapper(index, i+1):
+                    spawn(index, i+1)
+                    break
+                if not check_space_wrapper(index, i-1):
+                    spawn(index, i-1)
                     break
         turnNum += 1
     bytecode = get_bytecode()
