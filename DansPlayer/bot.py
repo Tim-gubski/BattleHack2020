@@ -26,11 +26,9 @@ def turn():
     """
     dlog('Starting Turn!')
     board_size = get_board_size()
-
     team = get_team()
     opp_team = Team.WHITE if team == Team.BLACK else team.BLACK
     dlog('Team: ' + str(team))
-
     robottype = get_type()
     dlog('Type: ' + str(robottype))
 
@@ -73,6 +71,18 @@ def turn():
                 spawn(index, i)
                 dlog('Spawned unit at: (' + str(index) + ', ' + str(i) + ')')
                 break
+
+def can_attack(enemy):
+    if enemy.x - robot.x == 1 or enemy.x - robot.x == -1:
+        
+
+
+def attack():
+    bot_list = sense()
+    for bot in bot_list:
+        if (bot.get_team() is not team) and :
+
+
 
     bytecode = get_bytecode()
     dlog('Done! Bytecode left: ' + str(bytecode))
