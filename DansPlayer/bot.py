@@ -1,5 +1,5 @@
 import random
-
+from globals import *
 
 # This is an example bot written by the developers!
 # Use this to help write your own code, or run it against your bot to see how well you can do!
@@ -74,14 +74,18 @@ def turn():
 
 def can_attack(enemy):
     if enemy.x - robot.x == 1 or enemy.x - robot.x == -1:
-        
-
+        if (team == Team.WHITE and enemy.y - robot.y == 1) or (team == Team.BLACK and enemy.y - robot.y == -1):
+            return True
+        else:
+            return False
+    else:
+        return False
 
 def attack():
     bot_list = sense()
     for bot in bot_list:
-        if (bot.get_team() is not team) and :
-
+        if (bot.get_team() is opp_team) and can_attack(bot):
+            capture(bot.x, bot.y)
 
 
     bytecode = get_bytecode()
