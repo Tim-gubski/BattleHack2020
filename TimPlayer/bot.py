@@ -11,6 +11,7 @@ c = None
 team = None
 turnNum = 0
 startPoint = 0
+index = 0
 def dlog(str):
     if DEBUG > 0:
         log(str)
@@ -42,6 +43,20 @@ def try_move_forward():
     if check_space_wrapper(r+forward,c)==False:
         move_forward()
 
+def column(matrix, i):
+    return [row[i] for row in matrix]
+
+def findEmpty():
+    board = get_board()
+    cols = {}
+    for i in range(board_size):
+        cols[i]=column(board,i).count(team)
+
+    ordered = []
+    for key, value in sorted(cols.items(), key=lambda item: item[1]):
+        ordered.append(key)
+    return ordered
+
 
 def turn():
     global forward
@@ -50,6 +65,7 @@ def turn():
     global team
     global turnNum
     global startPoint
+    global index
     """
     MUST be defined for robot to run
     This function will be called at the beginning of every turn and should contain the bulk of your robot commands
@@ -93,21 +109,25 @@ def turn():
 
     #OVERLORD
     else:
-        if turnNum%8==0:
-            startPoint+=1
-            startPoint = startPoint%2
-
         if team == Team.WHITE:
             index = 0
         else:
             index = board_size - 1
 
-        for x in range(8):
-            i=(startPoint+x*2)
-            if not check_space(index, i):
-                spawn(index, i)
-                dlog('Spawned unit at: (' + str(index) + ', ' + str(i) + ')')
-                break
+        if turnNum<=8:
+            for x in range(8):
+                i=(startPoint+x*2)
+                if not check_space(index, i):
+                    spawn(index, i)
+                    dlog('Spawned unit at: (' + str(index) + ', ' + str(i) + ')')
+                    break
+        else:
+            empty = findEmpty()
+            for i in empty:
+                if not check_space(index, i):
+                    spawn(index, i)
+                    dlog('Spawned unit at: (' + str(index) + ', ' + str(i) + ')')
+                    break
         turnNum += 1
     bytecode = get_bytecode()
     dlog('Done! Bytecode left: ' + str(bytecode))
