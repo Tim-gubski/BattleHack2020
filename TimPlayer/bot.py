@@ -38,6 +38,10 @@ def check_adjacent(r, c):
     else:
         return False
 
+def try_move_forward():
+    if check_space_wrapper(r+forward,c)==False:
+        move_forward()
+
 
 def turn():
     global forward
@@ -80,7 +84,7 @@ def turn():
 
         # Move forward if next to other unit
         elif check_adjacent(r, c):
-            move_forward()
+            try_move_forward()
             dlog('Moved forward!')
 
         confusion = "you need a line here to avoid segfault. we aren't sure why but are working on it"
@@ -89,21 +93,21 @@ def turn():
 
     #OVERLORD
     else:
-        turnNum+=1
         if turnNum%8==0:
             startPoint+=1
+            startPoint = startPoint%2
 
         if team == Team.WHITE:
             index = 0
         else:
             index = board_size - 1
 
-        for x in range(int(board_size/2)):
-            i=(startPoint+x*2)%15
+        for x in range(8):
+            i=(startPoint+x*2)
             if not check_space(index, i):
                 spawn(index, i)
                 dlog('Spawned unit at: (' + str(index) + ', ' + str(i) + ')')
                 break
-
+        turnNum += 1
     bytecode = get_bytecode()
     dlog('Done! Bytecode left: ' + str(bytecode))

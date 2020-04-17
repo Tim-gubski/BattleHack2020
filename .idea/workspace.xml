@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="bd77f1b0-93ec-4c1a-aa32-3cdf30cc57d6" name="Default Changelist" comment="" />
+    <list default="true" id="bd77f1b0-93ec-4c1a-aa32-3cdf30cc57d6" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/TimPlayer/bot.py" beforeDir="false" afterPath="$PROJECT_DIR$/TimPlayer/bot.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -13,8 +15,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/TimPlayer/bot.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="493">
-              <caret line="53" column="33" selection-start-line="53" selection-start-column="33" selection-end-line="53" selection-end-column="33" />
+            <state relative-caret-position="662">
+              <caret line="107" column="31" lean-forward="true" selection-start-line="107" selection-start-column="31" selection-end-line="107" selection-end-column="31" />
             </state>
           </provider>
         </entry>
@@ -125,8 +127,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/TimPlayer/bot.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="493">
-          <caret line="53" column="33" selection-start-line="53" selection-start-column="33" selection-end-line="53" selection-end-column="33" />
+        <state relative-caret-position="662">
+          <caret line="107" column="31" lean-forward="true" selection-start-line="107" selection-start-column="31" selection-end-line="107" selection-end-column="31" />
         </state>
       </provider>
     </entry>
