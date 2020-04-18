@@ -12,6 +12,7 @@ team = None
 turnNum = 0
 startPoint = 0
 index = 0
+idleCount = 0
 def dlog(str):
     if DEBUG > 0:
         log(str)
@@ -65,6 +66,7 @@ def turn():
     global turnNum
     global startPoint
     global index
+    global idleCount
     """
     MUST be defined for robot to run
     This function will be called at the beginning of every turn and should contain the bulk of your robot commands
@@ -98,9 +100,13 @@ def turn():
             dlog('Captured at: (' + str(r + forward) + ', ' + str(c - 1) + ')')
 
         # Move forward if next to other unit
+        elif idleCount>12:
+            try_move_forward()
         elif check_adjacent(r, c) and (check_space_wrapper(r+forward*2,c)!=team or check_space_wrapper(r-forward,c)==team):
             try_move_forward()
-            dlog('Moved forward!')
+            idleCount=0
+        else:
+            idleCount+=1
 
         confusion = "you need a line here to avoid segfault. we aren't sure why but are working on it"
         # ^ I think this is related to the potential ambiguity of what the following else is referring to?
