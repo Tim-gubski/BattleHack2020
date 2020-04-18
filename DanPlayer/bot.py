@@ -12,6 +12,9 @@ team = None
 turnNum = 0
 startPoint = 0
 index = 0
+finished_cols = []
+
+
 def dlog(str):
     if DEBUG > 0:
         log(str)
@@ -26,6 +29,7 @@ def check_space_wrapper(r, c):
     except RobotError:
         return None
 
+
 def check_spawn(r):
     if team == Team.WHITE and r == 0:
         return True
@@ -33,6 +37,7 @@ def check_spawn(r):
         return True
     else:
         return False
+
 
 def check_adjacent(r, c):
     if check_space_wrapper(r, c + 1) == team:
@@ -42,23 +47,27 @@ def check_adjacent(r, c):
     else:
         return False
 
+
 def try_move_forward():
-    if check_space_wrapper(r+forward,c)==False:
+    if not check_space_wrapper(r + forward, c):
         move_forward()
+
 
 def column(matrix, i):
     return [row[i] for row in matrix]
+
 
 def findEmpty():
     board = get_board()
     cols = {}
     for i in range(board_size):
-        cols[i]=column(board,i).count(team)
+        cols[i] = column(board, i).count(team)
 
     ordered = []
     for key, value in sorted(cols.items(), key=lambda item: item[1]):
         ordered.append(key)
     return ordered
+
 
 def senseThreat():
     board = get_board()
@@ -67,9 +76,18 @@ def senseThreat():
         rows[i] = row(board, i).count(opp_team)
 
     for key, value in sorted(rows.items(), key=lambda item: item[1]):
-        ordered. append(key)
+        ordered.append(key)
     return ordered
 
+
+def sense_finished():
+    if team == Team.WHITE:
+        idx = board_size - 1
+    else:
+        idx = 0
+    for i in range(board_size):
+        if check_space_wrapper(idx, i) == team and i not in finished_cols:
+            finished_cols.append(i)
 
 def turn():
     global forward
@@ -78,6 +96,7 @@ def turn():
     global team
     global turnNum
     global startPoint
+    global finished_cols
     global index
     """
     MUST be defined for robot to run
@@ -123,18 +142,40 @@ def turn():
         # ^ I think this is related to the potential ambiguity of what the following else is referring to?
 
 
-    #OVERLORD
+    # OVERLORD
     else:
         if team == Team.WHITE:
             index = 0
         else:
             index = board_size - 1
 
-        for i in range(16):
-            if not check_space_wrapper(index, i):
-                spawn(index, i)
-                break
+        sense_finished()
+
+        if team == Team.WHITE:
+            for i in range(board_size - 1):
+                if check_space_wrapper(index + 3, i) == opp_team:
+                    if not check_space_wrapper(index, i):
+                        spawn(index, i)
+                        break
+            else:
+                for i in range(board_size - 1):
+                    if not check_space_wrapper(index, i) and i not in finished_cols:
+                        spawn(index, i)
+                        break
+
+        elif team == Team.BLACK:
+            for i in range(board_size):
+                if check_space_wrapper(index - 3, i) == opp_team:
+                    if not check_space_wrapper(index, i):
+                        spawn(index, i)
+                        break
+            else:
+                for i in range(board_size):
+                    if not check_space_wrapper(index, i) and i not in finished_cols:
+                        spawn(index, i)
+                        break
 
         turnNum += 1
     bytecode = get_bytecode()
     dlog('Done! Bytecode left: ' + str(bytecode))
+    dlog("Finished columns: " + str(finished_cols))
