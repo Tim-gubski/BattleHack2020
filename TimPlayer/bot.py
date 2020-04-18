@@ -51,7 +51,6 @@ def findEmpty():
     cols = {}
     for i in range(board_size):
         cols[i]=column(board,i).count(team)
-
     ordered = []
     for key, value in sorted(cols.items(), key=lambda item: item[1]):
         ordered.append(key)
@@ -99,7 +98,7 @@ def turn():
             dlog('Captured at: (' + str(r + forward) + ', ' + str(c - 1) + ')')
 
         # Move forward if next to other unit
-        elif check_adjacent(r, c):
+        elif check_adjacent(r, c) and (check_space_wrapper(r+forward*2,c)!=team or check_space_wrapper(r-forward,c)==team):
             try_move_forward()
             dlog('Moved forward!')
 
