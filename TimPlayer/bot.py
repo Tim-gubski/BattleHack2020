@@ -21,7 +21,7 @@ def dlog(str):
 def check_space_wrapper(r, c):
     # check space, except doesn't hit you with game errors
     if r < 0 or c < 0 or c >= board_size or r >= board_size:
-        return False
+        return None
     try:
         return check_space(r, c)
     except RobotError:
@@ -81,6 +81,11 @@ def turn():
     robottype = get_type()
     dlog('Type: ' + str(robottype))
 
+    if team == Team.WHITE:
+        index = 0
+    else:
+        index = board_size - 1
+
     if robottype == RobotType.PAWN:
         r, c = get_location()
         dlog('My location is: ' + str(r) + ' ' + str(c))
@@ -102,7 +107,7 @@ def turn():
         # Move forward if next to other unit
         elif idleCount>12:
             try_move_forward()
-        elif check_adjacent(r, c) and (check_space_wrapper(r+forward*2,c)!=team or check_space_wrapper(r-forward,c)==team):
+        elif check_adjacent(r, c) and (check_space_wrapper(r+forward*2,c)!=team or check_space_wrapper(r-forward,c)==team) and r != board_size-index:
             try_move_forward()
             idleCount=0
         else:
@@ -114,12 +119,7 @@ def turn():
 
     #OVERLORD
     else:
-        if team == Team.WHITE:
-            index = 0
-        else:
-            index = board_size - 1
-
-        if turnNum<=8:
+        if turnNum<=7:
             for x in range(8):
                 i=(startPoint+x*2)
                 if not check_space(index, i):
