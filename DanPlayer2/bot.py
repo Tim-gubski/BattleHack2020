@@ -14,6 +14,8 @@ startPoint = 0
 index = 0
 finished_cols = []
 loop = 0
+increment = 0
+
 
 def dlog(str):
     if DEBUG > 0:
@@ -89,6 +91,7 @@ def sense_finished():
         if check_space_wrapper(idx, i) == team and i not in finished_cols:
             finished_cols.append(i)
 
+
 def turn():
     global forward
     global r, c
@@ -99,6 +102,7 @@ def turn():
     global finished_cols
     global index
     global loop
+    global increment
     """
     MUST be defined for robot to run
     This function will be called at the beginning of every turn and should contain the bulk of your robot commands
@@ -131,7 +135,8 @@ def turn():
             capture(r + forward, c - 1)
             dlog('Captured at: (' + str(r + forward) + ', ' + str(c - 1) + ')')
 
-        elif check_space_wrapper(r + (2 * forward), c + 1) is not opp_team or check_space_wrapper(r + (2 * forward), c - 1) is not opp_team:
+        elif check_space_wrapper(r + forward + forward, c + 1) is not opp_team and \
+                check_space_wrapper(r + forward + forward, c - 1) is not opp_team:
             try_move_forward()
 
         confusion = "you need a line here to avoid segfault. we aren't sure why but are working on it"
@@ -146,7 +151,14 @@ def turn():
             index = board_size - 1
 
         sense_finished()
-        col_spawn = loop % board_size
+
+        if loop * 2 % board_size == 0:
+            increment += 1
+
+        if increment % 2 == 0:
+            col_spawn = loop * 2 % board_size
+        else:
+            col_spawn = loop * 2 % board_size + 1
 
         if team == Team.WHITE:
             for i in range(board_size - 1):
@@ -169,6 +181,7 @@ def turn():
                 if not check_space_wrapper(index, col_spawn):
                     spawn(index, col_spawn)
                     loop += 1
+                
 
         turnNum += 1
     bytecode = get_bytecode()
