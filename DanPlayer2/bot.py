@@ -25,7 +25,7 @@ def dlog(str):
 def check_space_wrapper(r, c):
     # check space, except doesn't hit you with game errors
     if r < 0 or c < 0 or c >= board_size or r >= board_size:
-        return False
+        return None
     try:
         return check_space(r, c)
     except RobotError:
@@ -160,27 +160,55 @@ def turn():
         else:
             col_spawn = loop * 2 % board_size + 1
 
+        break_check = False
+
         if team == Team.WHITE:
             for i in range(board_size - 1):
-                if check_space_wrapper(index + 3, i) == opp_team:
+                if check_space_wrapper(index + 3, i) == opp_team and check_space_wrapper(index + 2, i) != team:
                     if not check_space_wrapper(index, i):
                         spawn(index, i)
+                        break_check = True
                         break
-            else:
+
+            if not break_check:
                 if not check_space_wrapper(index, col_spawn):
                     spawn(index, col_spawn)
                     loop += 1
+                elif not check_space_wrapper(index, col_spawn + 1):
+                    spawn(index, col_spawn - 1)
+                    loop += 1
+                elif not check_space_wrapper(index, col_spawn - 1):
+                    spawn(index, col_spawn - 1)
+                    loop += 1
+                else:
+                    for i in range(board_size):
+                        if not check_space_wrapper(index, col_spawn):
+                            spawn(index, col_spawn)
+                            break
 
         elif team == Team.BLACK:
             for i in range(board_size):
-                if check_space_wrapper(index - 3, i) == opp_team:
+                if check_space_wrapper(index - 3, i) == opp_team and check_space_wrapper(index - 2, i) != team:
                     if not check_space_wrapper(index, i):
                         spawn(index, i)
+                        break_check = True
                         break
-            else:
+
+            if not break_check:
                 if not check_space_wrapper(index, col_spawn):
                     spawn(index, col_spawn)
                     loop += 1
+                elif not check_space_wrapper(index, col_spawn + 1):
+                    spawn(index, col_spawn - 1)
+                    loop += 1
+                elif not check_space_wrapper(index, col_spawn - 1):
+                    spawn(index, col_spawn - 1)
+                    loop += 1
+                else:
+                    for i in range(board_size):
+                        if not check_space_wrapper(index, col_spawn):
+                            spawn(index, col_spawn)
+                            break
                 
 
         turnNum += 1
