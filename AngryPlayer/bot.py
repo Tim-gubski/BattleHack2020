@@ -16,6 +16,8 @@ opp_index = 0
 idleCount = 0
 opp_team = None
 finished_cols = []
+friends_arr = []
+
 def dlog(str):
     if DEBUG > 0:
         log(str)
@@ -82,6 +84,14 @@ def sense_finished():
         if check_space_wrapper(idx, i) == team and i not in finished_cols:
             finished_cols.append(i)
 
+def find_friends():
+    friends_arr = []
+    for r in range(board_size):
+        for c in range(board_size):
+            if get_board()[r][c] == team:
+                friends_arr.append([r, c])
+
+
 def turn():
     global forward
     global r, c
@@ -143,8 +153,10 @@ def turn():
     #OVERLORD
     else:
         break_check = False
+        spawn_check = False
 
         if team == Team.WHITE:
+            forward = 1
             for i in range(board_size):
                 if check_space_wrapper(index + 3, i) == opp_team and check_space_wrapper(index + 2, i) != team:
                     if not check_space_wrapper(index, i):
@@ -152,6 +164,7 @@ def turn():
                         break_check = True
                         break
         else:
+            forward = -1
             for i in range(board_size):
                 if check_space_wrapper(index - 3, i) == opp_team and check_space_wrapper(index - 2, i) != team:
                     if not check_space_wrapper(index, i):
@@ -159,6 +172,19 @@ def turn():
                         break_check = True
                         break
         if not break_check:
+            find_friends()
+            for i in friends_arr:
+                if check_space_wrapper(i[r] + 2 * forward, i[c] + 1) == opp_team or check_space_wrapper(i[r] + 2 * forward, i[c] - 1) == opp_team:
+                    if not check_space_wrapper(i[r], i[c] + 1):
+                        spawn(i[r], i[c] + 1)
+                        spawn_check = True
+                        break
+                    elif not check_space_wrapper(i[r], i[c] - 1):
+                        spawn(i[r], i[c] - 1)
+                        spawn_check = True
+                        break
+
+        if not spawn_check and not break_check:
             for _ in range(board_size):
                 i = random.randint(0, board_size - 1)
                 if not check_space(opp_index, i) == team and not check_space(index, i):
