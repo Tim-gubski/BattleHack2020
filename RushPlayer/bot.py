@@ -57,6 +57,68 @@ def findEmpty():
     for key, value in sorted(cols.items(), key=lambda item: item[1]):
         ordered.append(key)
     return ordered
+
+def findFullest():
+    board = get_board()
+    cols = {}
+    for i in range(board_size):
+        cols[i]=column(board,i).count(team)
+    ordered = []
+    for key, value in sorted(cols.items(), key=lambda item: item[1], reverse=True):
+        ordered.append(key)
+    return ordered
+
+def biggerInList(list, num):
+    for i in list:
+        if i >= num:
+            return True
+    return False
+
+def getRatio():
+    board = get_board()
+    cols = {}
+    for i in range(board_size):
+        cols[i]=column(board,i).count(opp_team) - column(board,i).count(team)
+    ordered = []
+    for key, value in sorted(cols.items(), key=lambda item: item[1],reverse=True):
+        ordered.append(key)
+    if biggerInList(ordered,3):
+        for i in ordered:
+            factor = [0, -1, 1]
+            random.shuffle(factor)
+            for x in factor:
+                if check_space_wrapper(index,i+x) == False:
+                    return i+x
+    else:
+        for i in findFullest():
+            factor = [-1, 1]
+            random.shuffle(factor)
+            for x in factor:
+                if check_space_wrapper(index, i + x) == False:
+                    return i + x
+
+
+
+def findBestSpawn():
+    bestSpawn = None
+    boardIndex = []
+    board = get_board()
+    for i in range(board_size):
+        boardIndex.append(i)
+    random.shuffle(boardIndex)
+    for i in boardIndex:
+        if opp_team in column(board,i) and not team in column(board,i) and check_space_wrapper(index,i) == False:
+            return i
+    return getRatio()
+
+    # for i in boardIndex:
+    #     if check_space_wrapper(index,i) == False:
+    #         return i
+
+
+
+
+
 def inDanger():
     if (check_space_wrapper(r + forward*2, c+1) != opp_team and check_space_wrapper(r + forward*2, c-1) != opp_team) or (check_space_wrapper(r, c+1) == team or check_space_wrapper(r, c-1) == team):
         return False
@@ -128,12 +190,7 @@ def turn():
 
     #OVERLORD
     else:
-        for _ in range(board_size):
-            i = random.randint(0, board_size - 1)
-            if not check_space(index, i):
-                spawn(index, i)
-                dlog('Spawned unit at: (' + str(index) + ', ' + str(i) + ')')
-                break
-        turnNum += 1
+        spawn(index,findBestSpawn())
+        turnNum+=1
     bytecode = get_bytecode()
     dlog('Done! Bytecode left: ' + str(bytecode))
