@@ -17,6 +17,7 @@ idleCount = 0
 opp_team = None
 finished_cols = []
 friends_arr = []
+supported_boi = None
 
 def dlog(str):
     if DEBUG > 0:
@@ -84,6 +85,14 @@ def sense_finished():
         if check_space_wrapper(idx, i) == team and i not in finished_cols:
             finished_cols.append(i)
 
+def find_friends():
+    array = []
+    for row in range(board_size):
+        for col in range(board_size):
+            if get_board()[row][col] == team:
+                array.append([row, col])
+    return array
+
 
 def turn():
     global forward
@@ -96,6 +105,7 @@ def turn():
     global opp_index
     global idleCount
     global opp_team
+    global supported_boi
     """
     MUST be defined for robot to run
     This function will be called at the beginning of every turn and should contain the bulk of your robot commands
@@ -146,8 +156,10 @@ def turn():
     #OVERLORD
     else:
         break_check = False
-        
+        spawn_check = False
+
         if team == Team.WHITE:
+            forward = 1
             for i in range(board_size):
                 if check_space_wrapper(index + 3, i) == opp_team and check_space_wrapper(index + 2, i) != team:
                     if not check_space_wrapper(index, i):
@@ -155,6 +167,7 @@ def turn():
                         break_check = True
                         break
         else:
+            forward = -1
             for i in range(board_size):
                 if check_space_wrapper(index - 3, i) == opp_team and check_space_wrapper(index - 2, i) != team:
                     if not check_space_wrapper(index, i):
@@ -162,6 +175,27 @@ def turn():
                         break_check = True
                         break
         if not break_check:
+            friends_arr = find_friends()
+            for i in friends_arr:
+                if i == supported_boi:
+                    dlog("Friend location: " + str(i) + " <--- SUPPORTED BOI!!!")
+                else:
+                    dlog("Friend location: " + str(i))
+                if ((check_space_wrapper(i[0] + 2 * forward, i[1] + 1) == opp_team or check_space_wrapper(i[0] + 2 * forward, i[1] - 1) == opp_team) and i is not supported_boi):
+                    if not check_space_wrapper(index, i[1] + 1):
+                        spawn(index, i[1] + 1)
+                        spawn_check = True
+                        dlog("Did a big brain placement at: (" + str(index) + ", " + str(i[1] + 1) + ")")
+                        supported_boi = i
+                        break
+                    elif not check_space_wrapper(index, i[1] - 1):
+                        spawn(index, i[1] - 1)
+                        spawn_check = True
+                        dlog("Did a big brain placement at: (" + str(index) + ", " + str(i[1] - 1) + ")")
+                        supported_boi = i
+                        break
+
+        if not spawn_check and not break_check:
             for _ in range(board_size):
                 i = random.randint(0, board_size - 1)
                 if not check_space(opp_index, i) == team and not check_space(index, i):
